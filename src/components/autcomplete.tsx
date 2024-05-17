@@ -70,7 +70,7 @@ function AutocompleteSearch({handleClose,setWeatherPreferenceList}:any) {
       {loading && <p>Loading...</p>}
       {searchResults?.length > 0 && (
         <ul>
-          {searchResults.map((i,result:any) => (
+          {searchResults.map((result:any,i) => (
             <div key={i}
                 onClick={()=>handleItemSelected(result)}
                 className='grid gap-12 items-center grid-cols-[1fr_1fr] p-4 itm'>

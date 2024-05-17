@@ -4,6 +4,7 @@ import axios from 'axios';
 const WeatherDetails = ({ singleweatherData, handleCloseShowDetails }: any) => {
   const [weatherData, setWeatherData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [unitSystem, setUnitSystem] = useState<'metric' | 'imperial'>('metric');
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -45,13 +46,30 @@ const WeatherDetails = ({ singleweatherData, handleCloseShowDetails }: any) => {
     return `${hours}:${minutes} ${ampm}`;
   };
 
+  const convertTemperature = (temp: number) => {
+    return unitSystem === 'metric' ? temp : (temp * 9/5) + 32;
+  };
+
+  const convertRainSum = (rain: number) => {
+    return unitSystem === 'metric' ? rain : rain * 0.0393701;
+  };
+
+  const toggleUnitSystem = () => {
+    setUnitSystem(prevUnit => prevUnit === 'metric' ? 'imperial' : 'metric');
+  };
+
   return (
     <div className="weather-details-container">
       <div className="header">
         <h2>7-Day Weather Forecast</h2>
-        <button className="close-btn" onClick={handleCloseShowDetails}>
-          Close
-        </button>
+        <div>
+          <button className="unit-btn" onClick={toggleUnitSystem}>
+            Switch to {unitSystem === 'metric' ? 'Imperial' : 'Metric'}
+          </button>
+          <button className="close-btn" onClick={handleCloseShowDetails}>
+            Close
+          </button>
+        </div>
       </div>
       {loading ? (
         <div className="loading">Loading...</div>
@@ -70,11 +88,11 @@ const WeatherDetails = ({ singleweatherData, handleCloseShowDetails }: any) => {
               {weatherData.daily.time.map((day: string, index: number) => (
                 <div key={index} className="grid grid-rows-[repeat(7,3rem)] text-center">
                   <p>{formatDate(day)}</p>
-                  <p>{weatherData.daily.temperature_2m_min[index]}°C</p>
-                  <p>{weatherData.daily.temperature_2m_max[index]}°C</p>
+                  <p>{convertTemperature(weatherData.daily.temperature_2m_min[index]).toFixed(1)}°{unitSystem === 'metric' ? 'C' : 'F'}</p>
+                  <p>{convertTemperature(weatherData.daily.temperature_2m_max[index]).toFixed(1)}°{unitSystem === 'metric' ? 'C' : 'F'}</p>
                   <p>{formatTime(weatherData.daily.sunrise[index])}</p>
                   <p>{formatTime(weatherData.daily.sunset[index])}</p>
-                  <p>{weatherData.daily.rain_sum[index]}mm</p>
+                  <p>{convertRainSum(weatherData.daily.rain_sum[index]).toFixed(2)}{unitSystem === 'metric' ? 'mm' : 'in'}</p>
                 </div>
               ))}
             </div>
@@ -98,6 +116,20 @@ const WeatherDetails = ({ singleweatherData, handleCloseShowDetails }: any) => {
           margin-bottom: 10px;
           border-bottom: 1px solid gray;
           padding-bottom: 1rem;
+        }
+
+        .unit-btn {
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 3px;
+          padding: 5px 10px;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+
+        .unit-btn:hover {
+          background-color: #45a049;
         }
 
         .close-btn {

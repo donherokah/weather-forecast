@@ -49,7 +49,7 @@ export default function Home() {
   }
 
   return (
-    <div className="grid justify-items-center w-full">
+    <div className="grid justify-items-center w-full h-screen grid-rows-[max-content]">
       <div className="grid justify-items-center items-center content-center">
         <div className="grid grid-cols-[1fr_1fr] items-center justify-items-start w-full mt-[4rem]">
           <h1 className="text-[xx-large] font-[fantasy]">Weather Tracker</h1>
